@@ -4,7 +4,6 @@ import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 
 export default function AgendarPage() {
   const [nomeCliente, setNomeCliente] = useState("");
@@ -14,7 +13,6 @@ export default function AgendarPage() {
   const [servico, setServico] = useState("");
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState(false);
-  const router = useRouter();
 
   async function salvarAgendamento(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +23,7 @@ export default function AgendarPage() {
     }
 
     setLoading(true);
+
     try {
       await addDoc(collection(db, "agendamentos"), {
         nomeCliente,
@@ -33,7 +32,7 @@ export default function AgendarPage() {
         hora,
         servico,
         status: "pendente",
-        secret: process.env.NEXT_PUBLIC_FIREBASE_SECRET, // usa variável do .env.local
+        secret: "SENHA_MANICURE",
       });
 
       setSucesso(true);
