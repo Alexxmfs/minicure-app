@@ -1,17 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { motion } from "framer-motion";
 
-type CategoriaServico = "Mãos e Unhas" | "Manutenção" | "Pés";
+type CategoriaServico = "Serviços básicos" | "Gel e alongamento" | "Pés";
 
 interface Servico {
   nome: string;
@@ -32,176 +26,89 @@ interface AgendamentoExistente {
 
 const SERVICOS: Servico[] = [
   {
-    nome: "Manicure e Pedicure",
-    preco: "R$ 70,00",
+    nome: "Pé e mão",
+    preco: "R$ 60,00",
     duracao: "2h",
     duracaoMin: 120,
-    categoria: "Mãos e Unhas",
+    categoria: "Serviços básicos",
   },
   {
-    nome: "Pedicure",
-    preco: "R$ 45,00",
-    duracao: "1h",
-    duracaoMin: 60,
-    categoria: "Pés",
-  },
-  {
-    nome: "Manicure",
-    preco: "R$ 40,00",
-    duracao: "1h",
-    duracaoMin: 60,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Alongamento em Unhas de gel",
-    preco: "R$ 180,00",
-    duracao: "3h",
-    duracaoMin: 180,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Unhas Postiças Realistas",
-    preco: "R$ 85,00",
-    duracao: "1h 30min",
-    duracaoMin: 90,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Esmaltação",
-    preco: "R$ 25,00",
-    duracao: "45min",
-    duracaoMin: 45,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Remoção de Alongamento",
-    preco: "R$ 50,00",
-    duracao: "1h",
-    duracaoMin: 60,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Reposição De 1 Unha Alongamento",
-    preco: "R$ 15,00",
-    duracao: "20min",
-    duracaoMin: 20,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Manicure, Pedicure + Spa Dos Pés",
-    preco: "R$ 120,00",
-    duracao: "3h",
-    duracaoMin: 180,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Alongamento De Soft Gel",
-    preco: "R$ 120,00",
-    duracao: "2h",
-    duracaoMin: 120,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Retirada De Postiça",
+    nome: "Mão",
     preco: "R$ 30,00",
-    duracao: "30min",
-    duracaoMin: 30,
-    categoria: "Mãos e Unhas",
+    duracao: "1h",
+    duracaoMin: 60,
+    categoria: "Serviços básicos",
   },
   {
-    nome: "Reposição De 1 Unha Postiça",
-    preco: "R$ 10,00",
-    duracao: "20min",
-    duracaoMin: 20,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Banho De Gel Com Esmaltação Em Gel",
-    preco: "R$ 120,00",
-    duracao: "2h 30min",
-    duracaoMin: 150,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Blindagem Com Esmaltação Em Gel",
-    preco: "R$ 95,00",
+    nome: "Pé",
+    preco: "R$ 35,00",
     duracao: "2h",
     duracaoMin: 120,
-    categoria: "Mãos e Unhas",
+    categoria: "Pés",
   },
   {
-    nome: "Manicure decorada ou com francesinha",
-    preco: "R$ 45,00",
-    duracao: "1h 30min",
-    duracaoMin: 90,
-    categoria: "Mãos e Unhas",
+    nome: "Mão esmaltação em gel",
+    preco: "R$ 55,00",
+    duracao: "1h",
+    duracaoMin: 60,
+    categoria: "Serviços básicos",
   },
   {
-    nome: "Unhas postiças realista decoradas",
-    preco: "R$ 90,00",
-    duracao: "2h",
-    duracaoMin: 120,
-    categoria: "Mãos e Unhas",
+    nome: "Pé esmaltação em gel",
+    preco: "R$ 60,00",
+    duracao: "1h",
+    duracaoMin: 60,
+    categoria: "Pés",
   },
   {
-    nome: "Manicure e pedicure decorada ou com francesinha",
-    preco: "R$ 75,00",
-    duracao: "2h 30min",
-    duracaoMin: 150,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Blindagem manicure e pedicure e esmaltação em gel",
-    preco: "R$ 170,00",
-    duracao: "3h",
-    duracaoMin: 180,
-    categoria: "Mãos e Unhas",
-  },
-  {
-    nome: "Manutenção com esmaltação em gel",
-    preco: "R$ 140,00",
-    duracao: "3h",
-    duracaoMin: 180,
-    categoria: "Manutenção",
-  },
-  {
-    nome: "Manutenção de unhas de gel, banho de gel e soft ge",
+    nome: "Pe e mão esmaltação em gel",
     preco: "R$ 110,00",
-    duracao: "2h 30min",
-    duracaoMin: 150,
-    categoria: "Manutenção",
+    duracao: "2h",
+    duracaoMin: 120,
+    categoria: "Serviços básicos",
   },
   {
-    nome: "Spa Dos Pés",
-    preco: "R$ 65,00",
-    duracao: "45min",
-    duracaoMin: 45,
-    categoria: "Pés",
-  },
-  {
-    nome: "Spa Dos Pes + Pedicure",
-    preco: "R$ 95,00",
-    duracao: "1h 45min",
-    duracaoMin: 105,
-    categoria: "Pés",
-  },
-  {
-    nome: "Blindagem com esmaltação em gel pedicure",
-    preco: "R$ 95,00",
-    duracao: "1h 40min",
-    duracaoMin: 100,
-    categoria: "Pés",
-  },
-  {
-    nome: "Pedicure decorado ou com francesinha",
-    preco: "R$ 50,00",
-    duracao: "1h 30min",
+    nome: "Banho de gel",
+    preco: "R$ 80,00",
+    duracao: "1h30",
     duracaoMin: 90,
+    categoria: "Gel e alongamento",
+  },
+  {
+    nome: "Aplicação de tips gel",
+    preco: "R$ 120,00",
+    duracao: "2h30",
+    duracaoMin: 150,
+    categoria: "Gel e alongamento",
+  },
+  {
+    nome: "Manutenção tips",
+    preco: "R$ 90,00",
+    duracao: "1h30",
+    duracaoMin: 90,
+    categoria: "Gel e alongamento",
+  },
+  {
+    nome: "Postiça realista",
+    preco: "R$ 60,00",
+    duracao: "1h30",
+    duracaoMin: 90,
+    categoria: "Gel e alongamento",
+  },
+  {
+    nome: "SPA dos pés+pedicure",
+    preco: "R$ 100,00",
+    duracao: "2h",
+    duracaoMin: 120,
     categoria: "Pés",
   },
 ];
 
-const CATEGORIAS: CategoriaServico[] = ["Mãos e Unhas", "Manutenção", "Pés"];
+const CATEGORIAS: CategoriaServico[] = [
+  "Serviços básicos",
+  "Gel e alongamento",
+  "Pés",
+];
 
 const HORARIOS_BASE = [
   "08:00",
@@ -214,7 +121,6 @@ const HORARIOS_BASE = [
   "11:30",
   "12:00",
   "12:30",
-  "13:00",
   "13:30",
   "14:00",
   "14:30",
@@ -225,6 +131,20 @@ const HORARIOS_BASE = [
   "17:00",
   "17:30",
   "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+];
+
+const BLOQUEIOS_FIXOS = [
+  {
+    inicio: "13:00",
+    fim: "13:30",
+    motivo: "Almoço",
+  },
 ];
 
 function horaParaMinutos(hora: string) {
@@ -242,7 +162,7 @@ function temConflito(
   inicioNovo: number,
   fimNovo: number,
   inicioExistente: number,
-  fimExistente: number
+  fimExistente: number,
 ) {
   return inicioNovo < fimExistente && fimNovo > inicioExistente;
 }
@@ -260,9 +180,9 @@ export default function AgendarPage() {
   const [hora, setHora] = useState("");
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState(false);
-  const [agendamentosDia, setAgendamentosDia] = useState<AgendamentoExistente[]>(
-    []
-  );
+  const [agendamentosDia, setAgendamentosDia] = useState<
+    AgendamentoExistente[]
+  >([]);
   const [carregandoHorarios, setCarregandoHorarios] = useState(false);
 
   const servicosFiltrados = useMemo(() => {
@@ -293,7 +213,10 @@ export default function AgendarPage() {
       setCarregandoHorarios(true);
 
       try {
-        const q = query(collection(db, "agendamentos"), where("data", "==", data));
+        const q = query(
+          collection(db, "agendamentos"),
+          where("data", "==", data),
+        );
         const snapshot = await getDocs(q);
 
         const lista = snapshot.docs.map((docSnap) => {
@@ -327,7 +250,7 @@ export default function AgendarPage() {
     if (!servicoSelecionado) return [];
 
     const duracaoNovo = servicoSelecionado.duracaoMin;
-    const ultimoHorarioPermitido = horaParaMinutos("18:00");
+    const ultimoHorarioPermitido = horaParaMinutos("21:00");
 
     return HORARIOS_BASE.filter((horarioBase) => {
       const inicioNovo = horaParaMinutos(horarioBase);
@@ -337,22 +260,27 @@ export default function AgendarPage() {
         return false;
       }
 
-      const conflitou = agendamentosDia.some((agendamento) => {
+      const conflitouComAlmoco = BLOQUEIOS_FIXOS.some((bloqueio) => {
+        const inicioBloqueio = horaParaMinutos(bloqueio.inicio);
+        const fimBloqueio = horaParaMinutos(bloqueio.fim);
+
+        return temConflito(inicioNovo, fimNovo, inicioBloqueio, fimBloqueio);
+      });
+
+      if (conflitouComAlmoco) {
+        return false;
+      }
+
+      const conflitouComAgendamento = agendamentosDia.some((agendamento) => {
         if (agendamento.status === "cancelado") return false;
 
         const inicioExistente = horaParaMinutos(agendamento.hora);
-        const fimExistente =
-          inicioExistente + (agendamento.duracaoMin || 60);
+        const fimExistente = inicioExistente + (agendamento.duracaoMin || 60);
 
-        return temConflito(
-          inicioNovo,
-          fimNovo,
-          inicioExistente,
-          fimExistente
-        );
+        return temConflito(inicioNovo, fimNovo, inicioExistente, fimExistente);
       });
 
-      return !conflitou;
+      return !conflitouComAgendamento;
     });
   }, [agendamentosDia, servicoSelecionado]);
 
@@ -453,7 +381,9 @@ export default function AgendarPage() {
             <motion.select
               className="w-full p-3 border border-pink-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white"
               value={categoria}
-              onChange={(e) => setCategoria(e.target.value as CategoriaServico | "")}
+              onChange={(e) =>
+                setCategoria(e.target.value as CategoriaServico | "")
+              }
               whileFocus={{ scale: 1.02 }}
             >
               <option value="">Selecione a categoria</option>
@@ -509,12 +439,12 @@ export default function AgendarPage() {
                 {!data
                   ? "Escolha primeiro a data"
                   : !servicoSelecionado
-                  ? "Escolha primeiro o serviço"
-                  : carregandoHorarios
-                  ? "Carregando horários..."
-                  : horariosDisponiveis.length === 0
-                  ? "Nenhum horário disponível"
-                  : "Selecione o horário"}
+                    ? "Escolha primeiro o serviço"
+                    : carregandoHorarios
+                      ? "Carregando horários..."
+                      : horariosDisponiveis.length === 0
+                        ? "Nenhum horário disponível"
+                        : "Selecione o horário"}
               </option>
 
               {horariosDisponiveis.map((h) => {
@@ -537,6 +467,15 @@ export default function AgendarPage() {
                   Não há horários livres para esse serviço nessa data.
                 </p>
               )}
+
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-600">
+              <p className="font-medium text-gray-700 mb-1">Observação:</p>
+              <p>• Atendimento das 08:00 às 21:00</p>
+              <p>
+                • Caso queira um horário mais cedo ou tenha algum problema no
+                sistema, entre em contato: 11 99389-6183
+              </p>
+            </div>
 
             <motion.button
               type="submit"
